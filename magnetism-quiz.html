@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Частота женского магнетизма</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital@1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  :root{
+    --bg:#0a0605;
+    --bg-card:#150b0a;
+    --bg-card-2:#1c0f0e;
+    --red:#a61b29;
+    --red-bright:#c72336;
+    --gold:#c7a467;
+    --gold-soft:#8f7a53;
+    --text:#f3e9de;
+    --text-muted:#9c8880;
+    --line:rgba(199,164,103,0.22);
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-padding-top: env(safe-area-inset-top, 0px);}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse 700px 500px at 50% -10%, rgba(166,27,41,0.28), transparent 60%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    min-height:100%;
+    padding:32px 16px;
+  }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){ }
+  }
+
+  .stage{
+    width:100%;
+    max-width:520px;
+    margin:0 auto;
+    position:relative;
+  }
+
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    justify-content:center;
+    margin-bottom:22px;
+    color:var(--gold-soft);
+    font-size:12px;
+    letter-spacing:0.16em;
+  }
+  .brand .dot{width:4px;height:4px;background:var(--gold-soft);border-radius:50%;}
+
+  .card{
+    background:linear-gradient(180deg, var(--bg-card-2), var(--bg-card));
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:40px 32px;
+    position:relative;
+    overflow:hidden;
+  }
+  .card::before{
+    content:"";
+    position:absolute;
+    top:0; right:0;
+    width:140px; height:140px;
+    background:radial-gradient(circle at top right, rgba(166,27,41,0.35), transparent 70%);
+    pointer-events:none;
+  }
+
+  /* ---- Hero ---- */
+  .screen{display:none;}
+  .screen.active{display:block;}
+
+  h1.hero-title{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:44px;
+    line-height:0.98;
+    letter-spacing:0.01em;
+    margin:0 0 14px;
+    color:var(--text);
+  }
+  h1.hero-title em{
+    font-style:normal;
+    color:var(--red-bright);
+  }
+  .tagline{
+    font-family:'Playfair Display',serif;
+    font-style:italic;
+    color:var(--gold);
+    font-size:17px;
+    margin:0 0 26px;
+    line-height:1.4;
+  }
+  .hero-desc{
+    color:var(--text-muted);
+    font-size:15px;
+    line-height:1.6;
+    margin:0 0 16px;
+  }
+  .hero-desc:last-of-type{margin-bottom:30px;}
+  .params-preview{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:32px;
+  }
+  .param-chip{
+    border:1px solid var(--line);
+    border-radius:100px;
+    padding:6px 14px;
+    font-size:12.5px;
+    color:var(--gold);
+  }
+
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    width:100%;
+    padding:16px 20px;
+    border:none;
+    border-radius:3px;
+    background:var(--red);
+    color:#fff;
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:15px;
+    letter-spacing:0.01em;
+    cursor:pointer;
+    transition:background .15s ease, transform .1s ease;
+  }
+  .btn:hover{background:var(--red-bright);}
+  .btn:active{transform:scale(0.98);}
+  .btn.ghost{
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--text);
+  }
+  .btn.ghost:hover{border-color:var(--gold-soft);background:rgba(199,164,103,0.06);}
+
+  /* ---- Question screen ---- */
+  .progress-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:28px;
+  }
+  .progress-track{
+    flex:1;
+    height:3px;
+    background:rgba(255,255,255,0.08);
+    border-radius:2px;
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    background:linear-gradient(90deg, var(--gold-soft), var(--gold));
+    width:0%;
+    transition:width .35s ease;
+  }
+  .progress-label{
+    font-size:12px;
+    color:var(--text-muted);
+    white-space:nowrap;
+    font-variant-numeric:tabular-nums;
+  }
+
+  .q-number{
+    font-size:12px;
+    letter-spacing:0.08em;
+    color:var(--gold-soft);
+    margin:0 0 10px;
+  }
+  .q-setup{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:34px;
+    line-height:1.05;
+    color:var(--text);
+    margin:0 0 12px;
+  }
+  .q-text{
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:21px;
+    line-height:1.4;
+    margin:0 0 26px;
+    color:var(--text);
+  }
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .option{
+    text-align:left;
+    background:rgba(255,255,255,0.02);
+    border:1px solid var(--line);
+    color:var(--text);
+    border-radius:3px;
+    padding:15px 16px;
+    font-family:'Inter',sans-serif;
+    font-size:14.5px;
+    line-height:1.45;
+    cursor:pointer;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .option:hover{border-color:var(--gold);background:rgba(199,164,103,0.07);}
+  .option:active{transform:scale(0.995);}
+
+  /* ---- Result screen ---- */
+  .result-eyebrow{
+    font-size:13px;
+    color:var(--gold-soft);
+    margin:0 0 6px;
+  }
+  .result-title{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:38px;
+    line-height:1;
+    margin:0 0 18px;
+    color:var(--red-bright);
+  }
+  .chart-wrap{
+    display:flex;
+    justify-content:center;
+    margin:8px 0 22px;
+  }
+  .chart-wrap svg{width:100%;max-width:340px;height:auto;}
+  .axis-label{
+    font-family:'Inter',sans-serif;
+    font-size:10.5px;
+    fill:var(--text-muted);
+  }
+  .axis-value{
+    font-family:'Inter',sans-serif;
+    font-weight:700;
+    font-size:11px;
+    fill:var(--gold);
+  }
+
+  .result-body{
+    font-size:15px;
+    line-height:1.65;
+    color:var(--text);
+    margin:0 0 22px;
+  }
+  .insight-row{
+    display:flex;
+    gap:12px;
+    margin-bottom:22px;
+  }
+  .insight{
+    flex:1;
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:14px 14px;
+  }
+  .insight .k{
+    font-size:11px;
+    letter-spacing:0.06em;
+    color:var(--gold-soft);
+    margin-bottom:6px;
+  }
+  .insight .v{
+    font-size:14px;
+    font-weight:600;
+    color:var(--text);
+  }
+  .insight.strong{border-color:rgba(199,164,103,0.4);}
+  .insight.weak{border-color:rgba(166,27,41,0.4);}
+
+  .cta-note{
+    font-family:'Playfair Display',serif;
+    font-style:italic;
+    color:var(--gold);
+    font-size:14.5px;
+    text-align:center;
+    margin:0 0 16px;
+    line-height:1.5;
+  }
+
+  .footer-link{
+    text-align:center;
+    margin-top:16px;
+  }
+  .footer-link button{
+    background:none;
+    border:none;
+    color:var(--text-muted);
+    font-size:13px;
+    text-decoration:underline;
+    cursor:pointer;
+    font-family:'Inter',sans-serif;
+  }
+
+  /* ---- Program / form / success ---- */
+  .top-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:6px;
+  }
+  .top-row .nick{
+    font-size:12px;
+    letter-spacing:0.08em;
+    color:var(--gold-soft);
+  }
+  .top-row .back-link{
+    background:none;border:none;cursor:pointer;
+    font-size:12px;letter-spacing:0.06em;
+    color:var(--text-muted);
+    font-family:'Inter',sans-serif;
+  }
+  .top-dots{
+    color:var(--line);
+    font-size:10px;
+    letter-spacing:2px;
+    margin-bottom:22px;
+    overflow:hidden;
+    white-space:nowrap;
+  }
+  .badge{
+    display:inline-block;
+    border:1px solid var(--red-bright);
+    color:var(--red-bright);
+    font-size:11px;
+    letter-spacing:0.08em;
+    padding:5px 12px;
+    border-radius:100px;
+    margin-bottom:14px;
+  }
+  .eyebrow-top{
+    font-size:13px;
+    color:var(--text-muted);
+    line-height:1.5;
+    margin:0 0 14px;
+  }
+  .section-title{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:40px;
+    line-height:1;
+    margin:0 0 16px;
+    color:var(--text);
+  }
+  .body-para{
+    font-size:14.5px;
+    line-height:1.65;
+    color:var(--text-muted);
+    margin:0 0 16px;
+  }
+  .body-para strong{color:var(--gold);font-weight:600;}
+  .divider{
+    border:none;
+    border-top:1px solid var(--line);
+    margin:26px 0;
+  }
+  .section-label{
+    font-size:12px;
+    letter-spacing:0.07em;
+    color:var(--gold);
+    margin:0 0 16px;
+  }
+  .module-card{
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:16px 16px;
+    margin-bottom:10px;
+  }
+  .module-title{
+    font-size:14.5px;
+    font-weight:700;
+    color:var(--text);
+    margin:0 0 6px;
+  }
+  .module-question{
+    font-family:'Playfair Display',serif;
+    font-style:italic;
+    color:var(--gold);
+    font-size:13.5px;
+    margin:0 0 10px;
+  }
+  .module-bullets{
+    margin:0; padding-left:18px;
+    font-size:13.5px;
+    line-height:1.6;
+    color:var(--text-muted);
+  }
+  .module-bullets li{margin-bottom:4px;}
+  .section-title-serif{
+    font-family:'Playfair Display',serif;
+    font-weight:700;
+    font-style:normal;
+    font-size:32px;
+    line-height:1.15;
+    margin:0 0 16px;
+    color:var(--text);
+  }
+  .plain-list{
+    margin:0 0 18px; padding-left:18px;
+    font-size:14px; line-height:1.75;
+    color:var(--text-muted);
+  }
+  .dash-list{list-style:none;padding-left:0;}
+  .dash-list li{padding-left:20px;position:relative;}
+  .dash-list li::before{content:"—";position:absolute;left:0;color:var(--gold-soft);}
+  .price-tiers{display:flex;flex-direction:column;gap:8px;margin:18px 0 6px;}
+  .price-tier{
+    display:flex;justify-content:space-between;align-items:center;
+    border:1px solid var(--line);border-radius:3px;
+    padding:13px 15px;
+  }
+  .price-tier .name{font-size:14px;color:var(--text);font-weight:600;}
+  .price-tier .price{font-size:14px;color:var(--gold);}
+  .two-col{display:flex;gap:10px;margin:20px 0;}
+  .mini-card{
+    flex:1;border:1px solid var(--line);border-radius:3px;
+    padding:14px 13px;
+  }
+  .mini-card .k{font-size:11.5px;color:var(--gold);font-weight:700;margin-bottom:6px;letter-spacing:0.02em;}
+  .mini-card .v{font-size:13px;color:var(--text-muted);line-height:1.5;}
+  .highlight-box{
+    border:1px solid rgba(199,164,103,0.35);
+    background:rgba(199,164,103,0.05);
+    border-radius:3px;
+    padding:16px 16px;
+    font-size:14px;
+    line-height:1.6;
+    color:var(--text);
+    margin:18px 0;
+  }
+  .gift-box{
+    border:1px solid var(--line);
+    background:rgba(166,27,41,0.06);
+    border-radius:3px;
+    padding:18px 16px;
+    margin:20px 0;
+  }
+  .gift-item{
+    font-size:13.5px;
+    line-height:1.6;
+    color:var(--text-muted);
+    margin:0 0 12px;
+  }
+  .gift-item:last-child{margin-bottom:0;}
+  .gift-item b{display:block;color:var(--text);font-size:14px;margin-bottom:2px;}
+  .disclaimer{
+    font-family:'Playfair Display',serif;
+    font-style:italic;
+    font-size:12.5px;
+    color:var(--text-muted);
+    line-height:1.55;
+    margin:16px 0 0;
+  }
+  .reassure{
+    text-align:center;
+    font-size:12.5px;
+    color:var(--text-muted);
+    margin:12px 0 0;
+    line-height:1.5;
+  }
+
+  /* form */
+  .form-label{
+    font-size:11.5px;
+    letter-spacing:0.06em;
+    color:var(--gold-soft);
+    margin:0 0 8px;
+  }
+  .form-input{
+    width:100%;
+    background:rgba(255,255,255,0.02);
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:14px 15px;
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    font-size:14.5px;
+    margin-bottom:18px;
+  }
+  .form-input:focus{outline:none;border-color:var(--gold);}
+  .form-question{font-size:15px;color:var(--text);margin:4px 0 4px;font-weight:600;}
+  .form-question-hint{font-size:12.5px;color:var(--text-muted);margin:0 0 14px;}
+  .radio-option{
+    display:block;width:100%;text-align:left;
+    background:rgba(255,255,255,0.02);
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:13px 15px;
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    margin-bottom:8px;
+    cursor:pointer;
+  }
+  .radio-option.selected{
+    border-color:var(--gold);
+    background:rgba(199,164,103,0.1);
+    color:var(--gold);
+  }
+  .checkbox-row{
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    margin:16px 0;
+  }
+  .checkbox-row input{margin-top:3px;accent-color:var(--gold);}
+  .checkbox-row label{
+    font-size:12.5px;
+    line-height:1.55;
+    color:var(--text-muted);
+  }
+  .checkbox-row a{color:var(--gold);}
+
+  /* success */
+  .success-icon{
+    width:56px;height:56px;
+    border-radius:50%;
+    border:1px solid var(--gold);
+    display:flex;align-items:center;justify-content:center;
+    margin:8px auto 22px;
+    font-size:24px;
+    color:var(--gold);
+  }
+  .success-title{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:34px;
+    text-align:center;
+    margin:0 0 14px;
+  }
+  .success-text{
+    font-size:14.5px;
+    line-height:1.65;
+    color:var(--text-muted);
+    text-align:center;
+    margin:0 0 26px;
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="brand"><span>ЖЕНСКИЙ МАГНЕТИЗМ</span><span class="dot"></span><span>ТЕСТ</span></div>
+
+  <div class="card">
+
+    <!-- HERO -->
+    <div class="screen active" id="screen-hero">
+      <h1 class="hero-title">Частота женского<br><em>магнетизма</em></h1>
+      <p class="tagline">Женское притяжение — это не удача, внешность или придуманные факты «о своей охуенности». Это состояние, из которого ты живёшь жизнь и которое считывают окружающие.</p>
+      <p class="hero-desc">У радиоволн есть частота: когда настраиваем приёмник на одну, слышим определённую радиопередачу. Если в подробности не вдаваться, твой женский магнетизм тоже имеет свои частоты.</p>
+      <p class="hero-desc">Мужчины считывают твою частоту быстрее, чем слова: лёгкость, границы, самоценность — всё это транслируется в комнату.</p>
+      <p class="hero-desc">В этом тесте правильных ответов нет, есть только те, которые ты выберешь.</p>
+      <p class="hero-desc">Дальше тебя ждут 8 ситуаций. Твои первые реакции на них очертят твой Женский магнетизм по 5 граням. В конце получишь личный пятиугольник: где частота уже высокая, а где проседает.</p>
+      <div class="params-preview" id="param-chips"></div>
+      <button class="btn" onclick="startQuiz()">Пройти тест</button>
+    </div>
+
+    <!-- QUESTION -->
+    <div class="screen" id="screen-question">
+      <div class="progress-row">
+        <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="progress-label" id="progress-label">1 / 8</div>
+      </div>
+      <p class="q-number" id="q-number"></p>
+      <p class="q-setup" id="q-setup"></p>
+      <h2 class="q-text" id="q-text"></h2>
+      <div class="options" id="q-options"></div>
+    </div>
+
+    <!-- RESULT -->
+    <div class="screen" id="screen-result">
+      <p class="result-eyebrow">Твой результат</p>
+      <h2 class="result-title" id="result-title"></h2>
+
+      <div class="chart-wrap"><svg id="radar" viewBox="0 0 320 320"></svg></div>
+
+      <p class="result-body" id="result-body"></p>
+
+      <div class="insight-row">
+        <div class="insight strong">
+          <div class="k">СИЛЬНАЯ СТОРОНА</div>
+          <div class="v" id="insight-strong"></div>
+        </div>
+        <div class="insight weak">
+          <div class="k">ТОЧКА РОСТА</div>
+          <div class="v" id="insight-weak"></div>
+        </div>
+      </div>
+
+      <div class="highlight-box" id="result-hook"></div>
+
+      <button class="btn" onclick="showProgram()">Что за игра →</button>
+
+      <div class="footer-link"><button onclick="restartQuiz()">Пройти ещё раз</button></div>
+    </div>
+
+    <!-- PROGRAM -->
+    <div class="screen" id="screen-program">
+      <div class="top-row">
+        <span class="nick">13_LAIKA</span>
+        <button class="back-link" onclick="show('screen-result')">← Результат</button>
+      </div>
+      <div class="top-dots">••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••</div>
+
+      <span class="badge">Предзапись</span>
+      <p class="eyebrow-top">8-модульная игра 13_laika про самоценность, границы и отношения с мужчинами</p>
+
+      <h2 class="section-title-serif">Женский магнетизм</h2>
+      <p class="body-para">Формат, где вы не читаете про самоценность, а проживаете её в заданиях, свиданиях и практиках с реальными мужчинами. <strong>Старт 12 октября.</strong></p>
+
+      <div class="highlight-box"><strong>Набор в поток уже открыт.<br>Место можно занять сейчас.</strong></div>
+
+      <p class="body-para">Самоценность — это не про «настроить мышление». Это о том, что вы делаете и что себе разрешаете в реальной жизни, а не в фантазиях.</p>
+      <p class="body-para">Например, когда рядом мужчина. Или когда появляются финансовые трудности, хочется вести блог и проявляться. И на практике не получается делать то, чего вам хочется.</p>
+      <p class="body-para">По-моему, в жизни нет хуже ситуации, когда вы головой всё понимаете, а сделать не можете.</p>
+      <p class="body-para">В Игре вы тренируете всё на практике. И поверьте, у вас будут огромные стимулы это делать.</p>
+
+      <hr class="divider">
+      <p class="section-label">Восемь модулей. Каждый — про свою часть вашей жизни</p>
+      <div id="modules-list"></div>
+
+      <hr class="divider">
+      <p class="section-label">Каждый модуль вы получаете</p>
+      <ul class="plain-list dash-list">
+        <li>Задание и практику на день</li>
+        <li>Разбор в общем чате потока</li>
+        <li>Поддержку своего Бадди</li>
+      </ul>
+
+      <p class="section-label">И сверх этого</p>
+      <ul class="plain-list dash-list">
+        <li>Доступ в закрытый чат Игры</li>
+        <li>Дополнительный игровой модуль 18+ и карты-сценарии (например, «Тайская массажистка», «Девушка по вызову»)</li>
+        <li>Участие в конкурсе на победителя Игры с денежным призом</li>
+        <li>Доступ к материалам навсегда</li>
+        <li>Гайд по перепискам с мужчинами и подсказки, как вкусно отвечать</li>
+        <li>Секретный подарок №1</li>
+        <li>Секретный подарок №2</li>
+      </ul>
+
+      <p class="body-para"><strong>Игра не заменяет работу с психологом или сексологом при серьёзных запросах.</strong> Часть заданий 18+ и рассчитана на взрослых участниц.</p>
+
+      <div class="two-col">
+        <div class="mini-card">
+          <div class="k">САМАЯ НИЗКАЯ ЦЕНА</div>
+          <div class="v">Тем, кто в списке, Игра будет доступна по цене в 7 раз ниже предыдущей.</div>
+        </div>
+        <div class="mini-card">
+          <div class="k">ЗАКРЫТЫЙ ЧАТ 13_LAIKA</div>
+          <div class="v">Новое вы видите первыми, здесь лучшие условия и материалы, которых нет в открытом доступе.</div>
+        </div>
+      </div>
+
+      <div class="highlight-box"><strong>Особенность этой игры.</strong><br>Я спрошу у вас в чате, чего вам не хватает, и из ваших ответов соберу часть Игры. Обычно вы угадываете и подстраиваетесь, забываете про себя и делаете то, что нужно другим. А тут я спрошу, чего хотите вы.</div>
+
+      <p class="section-label" style="margin-top:22px;">Три бонуса в подарок тем, кто оплатит первыми</p>
+      <div class="gift-box">
+        <p class="gift-item">🎧 <b>Инструкция к медитации «Путь к себе»</b>Медитация в тишине, которая позволяет соединиться с собой и услышать голос своей души.</p>
+        <p class="gift-item">💰 <b>Денежная медитация</b>Та самая практика, написанная «на коленке» в 2020 году, когда я первый раз вышла на 1 млн рублей. После неё девочки часто пишут, что начинают приходить деньги.</p>
+        <p class="gift-item">🔥 <b>Практика «Залезть в голову»</b>Легендарная практика, тот самый секрет манкой женщины, с помощью которого можно заставить его думать о тебе тогда, когда этого хочешь ты.</p>
+      </div>
+
+      <p class="body-para" style="margin-top:18px;">После заявки с вами свяжется моя команда. Ники в телеграме, под которыми мы пишем, я выложу в закрытый канал, куда вы попадёте после предзаписи.</p>
+      <p class="body-para">Они расскажут, как устроена новая Игра, и закрепят за вами ту самую стоимость <strong>в 7 раз ниже</strong>, ответят на все вопросы. Такая цена будет держаться за вами до <strong>30 сентября</strong>.</p>
+
+      <button class="btn" onclick="showForm()">Оставить заявку →</button>
+      <p class="reassure">Платить сейчас ничего не нужно. Два поля: имя и телеграм.</p>
+    </div>
+
+    <!-- FORM -->
+    <div class="screen" id="screen-form">
+      <span class="badge">Предзапись</span>
+      <h2 class="section-title">Записываю вас<br>в предзапись</h2>
+      <p class="body-para">Оставьте контакт — команда свяжется и подскажет, какой тариф под вашу задачу.</p>
+
+      <p class="form-label">КАК ВАС ЗОВУТ</p>
+      <input class="form-input" type="text" id="form-name" placeholder="Имя">
+
+      <p class="form-label">ТЕЛЕГРАМ</p>
+      <input class="form-input" type="text" id="form-username" placeholder="@имя">
+
+      <p class="form-question">Насколько вы готовы принять участие в Игре?</p>
+      <p class="form-question-hint">Ответ ни к чему не обязывает — просто чтобы понимать, с чего начать разговор.</p>
+      <button class="radio-option" data-value="ready" onclick="selectReadiness(this)">Готова прямо сейчас</button>
+      <button class="radio-option" data-value="details" onclick="selectReadiness(this)">Хочу узнать подробности</button>
+      <button class="radio-option" data-value="looking" onclick="selectReadiness(this)">Пока присматриваюсь</button>
+
+      <div class="checkbox-row">
+        <input type="checkbox" id="consent-data">
+        <label for="consent-data">Даю согласие на обработку персональных данных и ознакомлена с <a href="#">Политикой обработки данных</a></label>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="consent-mail">
+        <label for="consent-mail">Хочу получать письма и сообщения о программах и эфирах. Отписаться можно в один клик</label>
+      </div>
+
+      <div class="highlight-box">Сразу после записи откроем закрытый чат. Новое вы увидите там первыми.</div>
+
+      <button class="btn" id="submit-btn" onclick="submitForm()">Отправить заявку →</button>
+      <div class="footer-link"><button onclick="show('screen-program')">← Назад к Игре</button></div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="screen" id="screen-success">
+      <div class="success-icon">✓</div>
+      <h2 class="success-title">Вы в списке</h2>
+      <p class="success-text">Команда напишет вам в Телеграм с деталями и тарифами. А пока — добро пожаловать в закрытый чат, там всё самое свежее по Игре.</p>
+      <button class="btn" id="open-channel-btn" onclick="openChannel()">Открыть канал →</button>
+      <div class="footer-link"><button onclick="restartQuiz()">Пройти тест заново</button></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const PARAM_KEYS = ['L','M','S','P','G'];
+const PARAM_META = {
+  L: {label:'Лёгкость',    full:'лёгкость и юмор — умение не грузить и шутить в моменте'},
+  M: {label:'Привлекательность', full:'привлекательность — умение получать внимание, не выпрашивая'},
+  S: {label:'Самоценность',full:'самоценность — знание своей цены без оправданий'},
+  P: {label:'Проявленность',full:'проявленность — смелость показывать желания и себя'},
+  G: {label:'Границы',     full:'границы — умение не растворяться и держать свои стандарты'}
+};
+
+const QUESTIONS = [
+  {
+    setup: 'Он спрашивает',
+    text: '«Чем занимаешься?»',
+    params: ['L','S'],
+    options: [
+      {t:'Работаю, у нас сейчас сезон', v:0},
+      {t:'Делаю клиентов счастливыми 😄', v:3},
+      {t:'Я маркетолог, в компании ООО «Строй»', v:1},
+      {t:'Не работаю, занимаюсь любимым делом', v:2}
+    ]
+  },
+  {
+    setup: 'Хочешь сходить на концерт, а идти не с кем',
+    text: 'Твои действия?',
+    params: ['P','M'],
+    options: [
+      {t:'Молчишь и никуда не идёшь', v:1},
+      {t:'Выкладываешь сторис «мечтаю сходить», ничего не ожидая', v:3},
+      {t:'Мужчин достойных не осталось, не с кем сходить', v:0},
+      {t:'Пишешь ему прямо: своди меня на концерт', v:2}
+    ]
+  },
+  {
+    setup: 'Он прислал цветочный смайл 💐 без повода',
+    text: 'Что отвечаешь?',
+    params: ['G','S'],
+    options: [
+      {t:'Спасибо, очень приятно', v:1},
+      {t:'Я предпочитаю живые цветы', v:3},
+      {t:'Никак не реагируешь', v:0},
+      {t:'Ахах, я бы вообще-то предпочла живые', v:2}
+    ]
+  },
+  {
+    setup: 'Он извиняется за косяк',
+    text: 'Твоя реакция?',
+    params: ['L','M'],
+    options: [
+      {t:'Ты вообще нормальный? Который раз уже', v:1},
+      {t:'Присылаешь фото пустой вазы и ждёшь реакцию', v:3},
+      {t:'Дуешься молча, ждёшь, что сам догадается', v:0},
+      {t:'Ладно уж, проехали', v:2}
+    ]
+  },
+  {
+    setup: 'Он подкалывает',
+    text: '«Смотри не влюбись»',
+    params: ['L','G'],
+    options: [
+      {t:'Смущённо молчишь', v:1},
+      {t:'Оо, считал мои мысли! Хотела тебя предупредить о том же', v:3},
+      {t:'Ну и не собиралась вообще-то', v:0},
+      {t:'Если будет много поступков — это обязательно произойдёт, а так пока и не во что', v:2}
+    ]
+  },
+  {
+    setup: 'Он говорит',
+    text: '«Девушки сейчас пошли меркантильные»',
+    params: ['S','G'],
+    options: [
+      {t:'Я вообще не меркантильная, мне важна душа', v:0},
+      {t:'Согласна, как я рада, что нахожусь в их числе', v:3},
+      {t:'Обижаешься и переводишь тему', v:1},
+      {t:'И правильно — все любят деньги, а ты нет?', v:2}
+    ]
+  },
+  {
+    setup: 'Он отменил свидание',
+    text: 'Общение только начинается',
+    params: ['G','P'],
+    options: [
+      {t:'Опять?? Третий раз уже', v:0},
+      {t:'Да всё нормально, не переживай — я как раз хотела на танцы', v:3},
+      {t:'Сразу пишешь снова через час — узнать, как он', v:1},
+      {t:'Жаль, ну ладно, до связи', v:2}
+    ]
+  },
+  {
+    setup: 'Он отменил свидание',
+    text: 'Между вами уже есть притяжение',
+    params: ['M','P'],
+    options: [
+      {t:'Ну вот, опять на меня забил', v:0},
+      {t:'Очень жаль... (отправляешь фото, где уже собралась и красивая)', v:3},
+      {t:'Не отвечаешь вообще', v:1},
+      {t:'Ничего, у меня и так дел много', v:2}
+    ]
+  }
+];
+
+let scores = {L:0,M:0,S:0,P:0,G:0};
+let maxScores = {L:0,M:0,S:0,P:0,G:0};
+QUESTIONS.forEach(q => q.params.forEach(p => maxScores[p]+=3));
+
+let current = 0;
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function initHero(){
+  const wrap = document.getElementById('param-chips');
+  wrap.innerHTML = PARAM_KEYS.map(k=>`<span class="param-chip">${PARAM_META[k].label}</span>`).join('');
+}
+
+function startQuiz(){
+  current = 0;
+  scores = {L:0,M:0,S:0,P:0,G:0};
+  show('screen-question');
+  renderQuestion();
+}
+
+function restartQuiz(){
+  show('screen-hero');
+}
+
+function renderQuestion(){
+  const q = QUESTIONS[current];
+  document.getElementById('progress-fill').style.width = ((current)/QUESTIONS.length*100)+'%';
+  document.getElementById('progress-label').textContent = (current+1)+' / '+QUESTIONS.length;
+  document.getElementById('q-number').textContent = 'Ситуация №'+(current+1);
+  document.getElementById('q-setup').textContent = q.setup;
+  document.getElementById('q-text').textContent = q.text;
+  const optWrap = document.getElementById('q-options');
+  optWrap.innerHTML = '';
+  q.options.forEach(opt=>{
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.textContent = opt.t;
+    btn.onclick = ()=>answer(opt.v);
+    optWrap.appendChild(btn);
+  });
+}
+
+function answer(value){
+  const q = QUESTIONS[current];
+  q.params.forEach(p => scores[p]+=value);
+  current++;
+  if(current < QUESTIONS.length){
+    renderQuestion();
+  } else {
+    document.getElementById('progress-fill').style.width='100%';
+    showResult();
+  }
+}
+
+function showResult(){
+  const pct = {};
+  PARAM_KEYS.forEach(k => pct[k] = Math.round((scores[k]/maxScores[k])*100));
+
+  const avg = PARAM_KEYS.reduce((s,k)=>s+pct[k],0)/5;
+
+  let title, body;
+  if(avg < 35){
+    title='Всё сама';
+    body='Ты привыкла справляться в одиночку: сама решаешь, сама тащишь, сама себе, если что, покупаешь цветы. Внутри давно живёт «я справлюсь без чьей-то помощи», и мужчина рядом превращается в наблюдателя, а не в того, кто ухаживает. Дело не в том, что ты недостаточно хороша. Просто психика давно разучилась ждать заботы, потому что однажды перестала на неё рассчитывать. Магнетизм не пропал, он выключен из соображений безопасности. Его можно включить обратно.';
+  } else if(avg < 60){
+    title='Магнетизм спит';
+    body='Внутри точно есть та самая лёгкость и притяжение, ты сама это чувствуешь в лучшие свои дни. Но включается через раз: то ты лёгкая и желанная, то откатываешься в контроль и «надо разобраться самой». Мужчины считывают это состояние быстрее слов. Вот почему внимание приходит нестабильно, ровно как твоя уверенность в моменте.';
+  } else if(avg < 82){
+    title='В потоке';
+    body='Ты умеешь притягивать к себе внимание, прямо, без выпрашивания и без молчаливых обид. Мужчины откликаются, дарят, замечают. Но пока это ощущается как хороший день среди обычных, а не постоянное состояние. Навык уже есть, просто не хватает частоты, на которой ты живёшь в нём каждый день.';
+  } else {
+    title='Женщина, которую выбирают';
+    body='Ты умеешь получать внимание, заботу и подарки, не разрушая себя и не унижаясь до просьб, а это редкость. Дальше не учиться заново, а расширять частоту: превращать редкие сюрпризы в норму жизни.';
+  }
+
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-body').textContent = body;
+
+  let hook;
+  if(avg < 35){
+    hook = '12 октября стартует Игра, 8 модулей о том, как перестать тащить всё в одиночку и позволить мужчине заботиться. Не теория, а практика на реальных ситуациях и свиданиях. Именно оттуда обычно и включается частота обратно.';
+  } else if(avg < 60){
+    hook = '12 октября стартует Игра, формат, где та самая лёгкость и магнетизм включаются не через раз, а становятся навыком. 8 модулей практики вместо теории: задания, свидания, разбор в потоке.';
+  } else if(avg < 82){
+    hook = '12 октября стартует Игра, чтобы твоё «в потоке» перестало быть случайностью и стало частотой, на которой ты живёшь каждый день. 8 модулей практики с разбором в закрытом чате потока.';
+  } else {
+    hook = '12 октября стартует Игра, для тех, кто уже умеет притягивать и хочет расширить частоту ещё дальше: 8 модулей практики, закрытый чат и разбор результатов.';
+  }
+  document.getElementById('result-hook').innerHTML = hook;
+
+  const sorted = [...PARAM_KEYS].sort((a,b)=>pct[b]-pct[a]);
+  const strongKey = sorted[0];
+  const weakKey = sorted[sorted.length-1];
+  document.getElementById('insight-strong').textContent = PARAM_META[strongKey].label+', '+pct[strongKey]+'%';
+  document.getElementById('insight-weak').textContent = PARAM_META[weakKey].label+', '+pct[weakKey]+'%';
+
+  drawRadar(pct);
+  show('screen-result');
+}
+
+function drawRadar(pct){
+  const svg = document.getElementById('radar');
+  svg.setAttribute('viewBox','0 0 460 400');
+  const cx=230, cy=190, R=90;
+  const labelR = R+32;
+  const n = PARAM_KEYS.length;
+  const angleFor = i => -Math.PI/2 + i*(2*Math.PI/n);
+
+  function pointAt(i, r){
+    const a = angleFor(i);
+    return [cx + r*Math.cos(a), cy + r*Math.sin(a)];
+  }
+
+  let svgContent = '';
+
+  // grid rings
+  [0.25,0.5,0.75,1].forEach(f=>{
+    let pts=[];
+    for(let i=0;i<n;i++){ pts.push(pointAt(i, R*f).join(',')); }
+    svgContent += `<polygon points="${pts.join(' ')}" fill="none" stroke="rgba(199,164,103,0.16)" stroke-width="1"/>`;
+  });
+
+  // axis lines
+  for(let i=0;i<n;i++){
+    const [x,y] = pointAt(i,R);
+    svgContent += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="rgba(199,164,103,0.16)" stroke-width="1"/>`;
+  }
+
+  // data polygon
+  let dataPts=[];
+  PARAM_KEYS.forEach((k,i)=>{
+    const r = R * Math.max(pct[k],4)/100;
+    dataPts.push(pointAt(i,r));
+  });
+  svgContent += `<polygon points="${dataPts.map(p=>p.join(',')).join(' ')}" fill="rgba(166,27,41,0.32)" stroke="#c72336" stroke-width="2"/>`;
+
+  dataPts.forEach(p=>{
+    svgContent += `<circle cx="${p[0]}" cy="${p[1]}" r="3.5" fill="#c7a467"/>`;
+  });
+
+  // labels — label line + value line stacked under a single anchor point,
+  // anchor chosen by which side of center the point falls on, with enough
+  // horizontal margin baked into the viewBox so text never clips
+  PARAM_KEYS.forEach((k,i)=>{
+    const [lx,ly] = pointAt(i, labelR);
+    const cosA = Math.cos(angleFor(i));
+    let anchor = 'middle';
+    if(cosA > 0.3) anchor='start';
+    else if(cosA < -0.3) anchor='end';
+    svgContent += `<text x="${lx}" y="${ly}" text-anchor="${anchor}" class="axis-label" dominant-baseline="middle">${PARAM_META[k].label}</text>`;
+    svgContent += `<text x="${lx}" y="${ly+15}" text-anchor="${anchor}" class="axis-value" dominant-baseline="middle">${pct[k]}%</text>`;
+  });
+
+  svg.innerHTML = svgContent;
+}
+
+initHero();
+
+const MODULES = [
+  {title:'Модуль 1. Знакомство', q:'Кто в этой Игре рядом со мной?', bullets:['Знакомство с участницами, разделение на группы и поиск Бадди','Прописываете личное намерение на Игру']},
+  {title:'Модуль 2. Проявленность', q:'Что будет, если я перестану сдерживаться?', bullets:['Практики на проявленность 18+, со своим мужчиной или с новым','Одно «безумное» задание на выбор']},
+  {title:'Модуль 3. Самоценность и любовь к себе', q:'Почему чужая оценка решает за меня?', bullets:['Как осуждение и оценка влияют на вас','Как оставаться в сильной позиции с мужчинами и с людьми']},
+  {title:'Модуль 4. Игра с мужчинами. Мужская психология', q:'Где я сама заваливаю отношения в начале?', bullets:['Дистанцирование и преконтакт','Как сделать так, чтобы мужчина ухаживал']},
+  {title:'Модуль 5. Теневая сторона', q:'На что я на самом деле способна?', bullets:['Распаковка своей тени','Задание на встречу с той стороной себя, которую обычно прячете']},
+  {title:'Модуль 6. Свидания', q:'Как создать свидание, а не ждать его?', bullets:['Где знакомиться с мужчинами','Вы сами создаёте свидание и доводите его до «крышесносного» результата']},
+  {title:'Модуль 7. Самопрограммирование', q:'Что я готова себе разрешить?', bullets:['Прописываете жизнь мечты в канал самопрограммирования','Игра «мне можно всё»']},
+  {title:'Модуль 8. Подводим итоги', q:'Что изменилось за время Игры?', bullets:['Смотрите на результат и определяете победителя Игры']}
+];
+
+function renderModules(){
+  const wrap = document.getElementById('modules-list');
+  if(wrap.childElementCount) return;
+  MODULES.forEach(m=>{
+    const card = document.createElement('div');
+    card.className='module-card';
+    card.innerHTML = `<div class="module-title">${m.title}</div><div class="module-question">«${m.q}»</div><ul class="module-bullets">${m.bullets.map(b=>`<li>${b}</li>`).join('')}</ul>`;
+    wrap.appendChild(card);
+  });
+}
+
+function showProgram(){
+  renderModules();
+  show('screen-program');
+}
+
+// ==== НАСТРОЙКИ: подставь свои значения после деплоя ====
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxN2KxUaINkzO1CYMVIHjhA6Qo3gDigzSrrTwWMfMmCoaDZY1H_HzpUXldYWCCSh0v2/exec';
+const CHANNEL_URL = 'ВСТАВЬ_ССЫЛКУ_НА_ЗАКРЫТЫЙ_КАНАЛ';
+// ==========================================================
+
+const tg = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null;
+if(tg){ tg.ready(); tg.expand(); }
+
+function showForm(){
+  // автоподтяжка имени и юзернейма из Telegram — сработает только
+  // если страница реально открыта как Telegram Mini App
+  const nameField = document.getElementById('form-name');
+  const userField = document.getElementById('form-username');
+  if(tg && tg.initDataUnsafe && tg.initDataUnsafe.user){
+    const u = tg.initDataUnsafe.user;
+    if(!nameField.value){
+      nameField.value = [u.first_name, u.last_name].filter(Boolean).join(' ');
+    }
+    if(!userField.value && u.username){
+      userField.value = '@'+u.username;
+    }
+  }
+  show('screen-form');
+}
+
+let selectedReadiness = null;
+function selectReadiness(btn){
+  document.querySelectorAll('.radio-option').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedReadiness = btn.dataset.value;
+}
+
+function submitForm(){
+  const name = document.getElementById('form-name').value.trim();
+  const username = document.getElementById('form-username').value.trim();
+  const consentData = document.getElementById('consent-data').checked;
+  const consentMail = document.getElementById('consent-mail').checked;
+
+  if(!name || !username){
+    alert('Заполните имя и телеграм');
+    return;
+  }
+  if(!consentData){
+    alert('Нужно согласие на обработку персональных данных');
+    return;
+  }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Отправляем…';
+
+  fetch(APPS_SCRIPT_URL, {
+    method:'POST',
+    mode:'no-cors',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify({
+      name: name,
+      username: username,
+      readiness: selectedReadiness || 'не выбрана',
+      consentMail: consentMail
+    })
+  })
+  .then(()=>{
+    btn.disabled = false;
+    btn.textContent = 'Отправить заявку →';
+    show('screen-success');
+  })
+  .catch(()=>{
+    btn.disabled = false;
+    btn.textContent = 'Отправить заявку →';
+    alert('Не получилось отправить, попробуйте ещё раз');
+  });
+}
+
+function openChannel(){
+  if(tg && tg.openTelegramLink){
+    tg.openTelegramLink(CHANNEL_URL);
+  } else {
+    window.open(CHANNEL_URL, '_blank');
+  }
+}
+
+</script>
+</body>
+</html>
