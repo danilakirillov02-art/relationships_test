@@ -680,7 +680,7 @@
     <div class="screen" id="screen-form">
       <span class="badge">Предзапись</span>
       <h2 class="section-title">Записываю вас<br>в предзапись</h2>
-      <p class="body-para">Оставьте контакт — команда свяжется и подскажет, какой тариф под вашу задачу.</p>
+      <p class="body-para" id="form-intro">Оставьте контакт, команда свяжется и подскажет, какой тариф под вашу задачу.</p>
 
       <p class="form-label">КАК ВАС ЗОВУТ</p>
       <input class="form-input" type="text" id="form-name" placeholder="Имя">
@@ -689,31 +689,32 @@
       <input class="form-input" type="text" id="form-username" placeholder="@имя">
 
       <p class="form-question">Насколько вы готовы принять участие в Игре?</p>
-      <p class="form-question-hint">Ответ ни к чему не обязывает — просто чтобы понимать, с чего начать разговор.</p>
+      <p class="form-question-hint">Ответ ни к чему не обязывает. Он нужен, чтобы понимать, с чего начать разговор.</p>
       <button class="radio-option" data-value="ready" onclick="selectReadiness(this)">Готова прямо сейчас</button>
       <button class="radio-option" data-value="details" onclick="selectReadiness(this)">Хочу узнать подробности</button>
       <button class="radio-option" data-value="looking" onclick="selectReadiness(this)">Пока присматриваюсь</button>
 
       <div class="checkbox-row">
         <input type="checkbox" id="consent-data">
-        <label for="consent-data">Даю согласие на обработку персональных данных и ознакомлена с <a href="#">Политикой обработки данных</a></label>
+        <label for="consent-data">Я даю <a href="https://docs.yandex.ru/view/d/pQM872qXegjG2BDJfm6lHCPegnqahzm72s0qoIz-cKg6aFk4T01WRGRfUQ" target="_blank" rel="noopener">согласие</a> на обработку моих персональных данных и ознакомлен(а) с <a href="https://docs.yandex.ru/view/d/pQM872qXegjG2BDJfm6lHCPegnqahzm72s0qoIz-cKg6Z2FYY0NsTm00Zw" target="_blank" rel="noopener">Политикой обработки персональных данных</a>.</label>
       </div>
       <div class="checkbox-row">
         <input type="checkbox" id="consent-mail">
-        <label for="consent-mail">Хочу получать письма и сообщения о программах и эфирах. Отписаться можно в один клик</label>
+        <label for="consent-mail">Я хочу получать письма и сообщения о программах и эфирах. Отписаться можно в один клик. <a href="https://docs.yandex.ru/view/d/pQM872qXegjG2BDJfm6lHCPegnqahzm72s0qoIz-cKg6Sm0xY0FOOTZ1dw" target="_blank" rel="noopener">Условия рассылки</a>.</label>
       </div>
 
-      <div class="highlight-box">Сразу после записи откроем закрытый чат. Новое вы увидите там первыми.</div>
+      <div class="highlight-box">Сразу после записи откроем закрытый чат 13_laika. Новое вы увидите там первыми, там же лучшие условия и материалы, которых нет в открытом доступе.</div>
 
       <button class="btn" id="submit-btn" onclick="submitForm()">Отправить заявку →</button>
+      <p class="reassure">Моя команда напишет вам в Телеграм. После записи вас перекинет в обещанный Телеграм-канал.</p>
       <div class="footer-link"><button onclick="show('screen-program')">← Назад к Игре</button></div>
     </div>
 
     <!-- SUCCESS -->
     <div class="screen" id="screen-success">
-      <div class="success-icon">✓</div>
-      <h2 class="success-title">Вы в списке</h2>
-      <p class="success-text">Команда напишет вам в Телеграм с деталями и тарифами. А пока — добро пожаловать в закрытый чат, там всё самое свежее по Игре.</p>
+      <h2 class="success-title" style="text-align:left;">Готово. Вы в списке первых.</h2>
+      <p class="body-para">Сейчас откроется закрытый канал, там с вами свяжется моя команда и закрепит цену в 7 раз ниже.</p>
+      <p class="body-para">Новое вы увидите там первыми, там же лучшие условия и материалы, которых нет в открытом доступе.</p>
       <button class="btn" id="open-channel-btn" onclick="openChannel()">Открыть канал →</button>
       <div class="footer-link"><button onclick="restartQuiz()">Пройти тест заново</button></div>
     </div>
@@ -1013,7 +1014,7 @@ function showProgram(){
 
 // ==== НАСТРОЙКИ: подставь свои значения после деплоя ====
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxN2KxUaINkzO1CYMVIHjhA6Qo3gDigzSrrTwWMfMmCoaDZY1H_HzpUXldYWCCSh0v2/exec';
-const CHANNEL_URL = 'ВСТАВЬ_ССЫЛКУ_НА_ЗАКРЫТЫЙ_КАНАЛ';
+const CHANNEL_URL = 'https://t.me/+hw66NdnZD4FlZGVi';
 // ==========================================================
 
 const tg = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null;
@@ -1033,8 +1034,24 @@ function showForm(){
       userField.value = '@'+u.username;
     }
   }
+  updateFormIntro();
   show('screen-form');
 }
+
+function updateFormIntro(){
+  const name = document.getElementById('form-name').value.trim();
+  const username = document.getElementById('form-username').value.trim();
+  const intro = document.getElementById('form-intro');
+  if(name || username){
+    intro.innerHTML = 'Записываю как <b>'+(name || 'вас')+'</b>'+(username ? ', '+username : '')+'. Если что-то не так, поправьте.';
+  } else {
+    intro.textContent = 'Оставьте контакт, команда свяжется и подскажет, какой тариф под вашу задачу.';
+  }
+}
+document.addEventListener('DOMContentLoaded', ()=>{
+  document.getElementById('form-name').addEventListener('input', updateFormIntro);
+  document.getElementById('form-username').addEventListener('input', updateFormIntro);
+});
 
 let selectedReadiness = null;
 function selectReadiness(btn){
@@ -1062,6 +1079,8 @@ function submitForm(){
   btn.disabled = true;
   btn.textContent = 'Отправляем…';
 
+  // отправляем в фоне и не ждём ответа — если Google Script залагает
+  // или упадёт по сети, человек всё равно не должен зависнуть на экране
   fetch(APPS_SCRIPT_URL, {
     method:'POST',
     mode:'no-cors',
@@ -1072,17 +1091,15 @@ function submitForm(){
       readiness: selectedReadiness || 'не выбрана',
       consentMail: consentMail
     })
-  })
-  .then(()=>{
-    btn.disabled = false;
-    btn.textContent = 'Отправить заявку →';
-    show('screen-success');
-  })
-  .catch(()=>{
-    btn.disabled = false;
-    btn.textContent = 'Отправить заявку →';
-    alert('Не получилось отправить, попробуйте ещё раз');
-  });
+  }).catch(()=>{ /* тихо игнорируем — экран успеха уже показан */ });
+
+  btn.disabled = false;
+  btn.textContent = 'Отправить заявку →';
+  show('screen-success');
+
+  // автоматически открываем канал через 3 секунды, даже если запрос
+  // выше ещё не долетел или залагал
+  setTimeout(openChannel, 3000);
 }
 
 function openChannel(){
@@ -1092,6 +1109,7 @@ function openChannel(){
     window.open(CHANNEL_URL, '_blank');
   }
 }
+
 
 </script>
 </body>
